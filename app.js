@@ -96,15 +96,6 @@ const PRODUCTS = [
         image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNb9aQ4cH8VZB_AKDdCUqNWcyHM15Q9CbolQ&s'
     
     },
-    {
-        id: 'kb-012',
-        title: 'Kyboot Sport Runner',
-        price: 399,
-        category: 'Running',
-        description: 'Performance running shoe with cushioned midsole and responsive rebound.',
-        image: 'https://us.kybun.swiss/cdn/shop/files/kybun-shoe_9.png?v=1708958472&width=1500'
-    
-    }
   
 ];
 
