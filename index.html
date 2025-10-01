@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Kyboot Shop – Premium ergonomic shoes, sneakers, sandals & footwear focused on comfort, style and performance." />
+  <title>Kyboot Shop – Shoes & Footwear</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="glass-mode">
+  <script>
+    // Prevent browser from jumping to a remembered scroll or hash before our JS
+    if('scrollRestoration' in history){ try { history.scrollRestoration='manual'; } catch(e){} }
+    if(location.hash){ history.replaceState(null,'',location.pathname + location.search); }
+    window.scrollTo(0,0);
+  </script>
+  <!-- Animated Background Layer -->
+  <div id="bgFX" class="bg-fx" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#">Kyboot<span class="dot">.</span></a>
+      <div class="search-area">
+        <input id="searchInput" type="search" placeholder="Search shoes, e.g. 'sneaker'..." />
+      </div>
+      <nav class="actions">
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="all">All categories</option>
+        </select>
+        <select id="sortSelect" aria-label="Sort products">
+          <option value="default">Sort: Featured</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+        <button id="cartBtn" class="cart-btn" aria-haspopup="dialog" aria-controls="cartPanel">
+          Cart <span id="cartCount" class="cart-count">0</span>
+        </button>
+        <button id="modeToggle" class="mode-toggle ios-switch" role="switch" aria-checked="false" aria-pressed="false" aria-label="Enable Glass Mode" title="Toggle Glass UI">
+          <span class="track"></span>
+          <span class="thumb"></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main">
+    <section class="hero">
+      <div class="badge glow" aria-hidden="true">New Season 2025</div>
+      <h1>Kyboot Shop</h1>
+      <p>Comfortable. Stylish. Built for life on the move.</p>
+      <br>
+      <a id="viewCatalogBtn" class="btn primary">Shop Now</a>
+    </section>
+
+    <section class="controls">
+      <div class="stats" id="resultsInfo">Showing <span id="resultsCount">0</span> products</div>
+    </section>
+
+    <section id="productsGrid" class="products-grid" aria-live="polite">
+      <!-- products render here -->
+    </section>
+  </main>
+
+
+  <!-- Cart Panel -->
+  <aside id="cartPanel" class="cart-panel" aria-hidden="true" role="dialog" aria-label="Cart">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button id="closeCart" class="close">×</button>
+    </div>
+    <div id="cartItems" class="cart-items">
+      <!-- items injected -->
+    </div>
+    <div class="cart-footer">
+      <div class="totals">
+        <div>Subtotal</div>
+        <div id="cartSubtotal">0.00 QAR</div>
+      </div>
+      <button id="checkoutBtn" class="btn primary">Checkout</button>
+      <button id="clearCart" class="btn">Clear</button>
+    </div>
+  </aside>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div>© <span id="year"></span> Kyboot Shop – Made By Mohamed Safran</div>
+      <div class="footer-links">
+        <a href="#" id="terms">Terms</a>
+        <a href="#" id="contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <!-- Dialog / Toast Containers -->
+  <div id="uiDialogRoot" class="ui-dialog-root" aria-live="polite"></div>
+  <div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="false"></div>
+</body>
+</html>

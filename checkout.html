@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkout – Kyboot Shop</title>
+  <meta name="description" content="Secure checkout for Kyboot Shop" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Local checkout-specific tweaks (keep minimal; reuse global tokens) */
+    .checkout-wrapper { max-width: 1100px; margin: 40px auto 120px; padding: 0 24px; position: relative; z-index:1; }
+    .checkout-grid { display:grid; gap:36px; grid-template-columns: 1fr 380px; align-items:start; }
+    @media (max-width: 960px){ .checkout-grid { grid-template-columns: 1fr; } }
+    .panel { background: var(--card); border-radius: var(--radius-lg); padding:32px 34px 38px; box-shadow: var(--shadow); border:1px solid rgba(59,130,246,0.08); position:relative; overflow:hidden; }
+    .panel h2 { margin:0 0 18px; font-size:24px; font-weight:700; letter-spacing:-0.02em; }
+    .panel h3 { margin:34px 0 12px; font-size:18px; font-weight:600; }
+    .secure-badge { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); }
+    .secure-badge span { display:inline-block; width:8px; height:8px; background:var(--success); border-radius:50%; box-shadow:0 0 0 4px rgba(16,185,129,0.15); }
+    .fields { display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field label { font-size:13px; font-weight:600; letter-spacing:0.03em; text-transform:uppercase; color:var(--muted); }
+    .field input, .field select, .field textarea { padding:14px 16px; border-radius:14px; border:2px solid rgba(59,130,246,0.12); background:rgba(255,255,255,0.9); font:inherit; font-weight:500; box-shadow:var(--shadow-sm); transition: var(--transition-fast); }
+    .field textarea { resize:vertical; min-height:100px; }
+    .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color: var(--accent); box-shadow:0 0 0 3px rgba(59,130,246,0.25); background:#fff; }
+  .order-summary { position:sticky; top:100px; align-self:start; max-height:calc(100vh - 140px); overflow:auto; }
+  /* When JS fallback engages */
+  .order-summary.is-fixed { position:fixed !important; top:20px !important; overflow:auto; max-height:calc(100vh - 40px); z-index:60; }
+  @media (max-width: 960px){ .order-summary.is-fixed { position:static !important; max-height:none; } }
+    .summary-items { display:flex; flex-direction:column; gap:14px; margin: 6px 0 26px; max-height:300px; overflow:auto; padding-right:4px; }
+    .summary-item { display:flex; gap:14px; align-items:center; background:rgba(59,130,246,0.04); padding:12px 14px; border-radius:16px; border:1px solid rgba(59,130,246,0.1); position:relative; }
+    .summary-item img { width:60px; height:60px; object-fit:cover; border-radius:12px; box-shadow:var(--shadow-sm); }
+    .summary-item .meta { flex:1; display:flex; flex-direction:column; gap:2px; }
+    .summary-item .meta .t { font-weight:600; font-size:14px; line-height:1.3; }
+    .summary-item .meta .q { font-size:12px; font-weight:500; color:var(--muted); letter-spacing:0.03em; }
+  .summary-item .price { font-weight:600; font-size:14px; background: var(--accent-gradient); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; color:transparent; }
+    .totals-table { width:100%; border-collapse:collapse; margin: 0 0 24px; font-size:15px; }
+    .totals-table tr td { padding:6px 0; }
+    .totals-table tr td:last-child { text-align:right; font-weight:600; }
+    .totals-table tr.grand td { padding-top:12px; border-top:2px solid rgba(59,130,246,0.15); font-size:18px; font-weight:700; }
+    .coupon-row { display:flex; gap:10px; margin: 8px 0 22px; }
+    .coupon-row input { flex:1; }
+    .inline-note { font-size:12px; color:var(--muted); margin-top:-4px; }
+    .divider { height:1px; background:linear-gradient(90deg, rgba(59,130,246,0), rgba(59,130,246,0.25), rgba(59,130,246,0)); margin:34px 0; }
+    .return-link { display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-weight:600; color:var(--accent); font-size:14px; margin-bottom:24px; }
+    .return-link:hover { text-decoration:underline; }
+    .payment-methods { display:flex; gap:14px; flex-wrap:wrap; }
+    .pay-opt { position:relative; }
+    .pay-opt input { position:absolute; opacity:0; }
+    .pay-opt label { display:flex; align-items:center; gap:10px; padding:12px 18px; border:2px solid rgba(59,130,246,0.15); background:rgba(255,255,255,0.9); border-radius:14px; font-size:14px; font-weight:600; cursor:pointer; transition: var(--transition-fast); box-shadow:var(--shadow-sm); }
+    .pay-opt input:checked + label { border-color: var(--accent); box-shadow:0 0 0 4px rgba(59,130,246,0.2); }
+    .pay-opt label:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+    .review-box { background:rgba(59,130,246,0.05); padding:18px 20px; border-radius:16px; display:flex; flex-direction:column; gap:10px; border:1px solid rgba(59,130,246,0.1); }
+    .badge-pill { display:inline-block; padding:4px 10px; font-size:11px; letter-spacing:0.05em; font-weight:700; text-transform:uppercase; background:var(--accent-gradient); color:#fff; border-radius:40px; }
+    .place-order-btn { width:100%; font-size:16px; padding:18px 26px; }
+    .empty-msg { padding:40px 0; text-align:center; font-weight:600; color:var(--muted); }
+    body.glass-mode .panel { background: rgba(255,255,255,0.55); backdrop-filter: blur(22px) saturate(180%); border:1px solid rgba(255,255,255,0.4); }
+    body.glass-mode .summary-item { background: rgba(255,255,255,0.45); }
+    /* Enhancements */
+    .steps { display:flex; gap:10px; margin:0 0 32px; counter-reset: step; flex-wrap:wrap; }
+    .steps .step { position:relative; padding:10px 16px 10px 46px; background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.15); border-radius:40px; font-size:13px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); transition: var(--transition-fast); }
+    .steps .step::before { counter-increment: step; content: counter(step); position:absolute; left:10px; top:50%; transform:translateY(-50%); width:26px; height:26px; border-radius:50%; background:var(--accent-gradient); color:#fff; font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:700; box-shadow:0 2px 6px rgba(59,130,246,0.4); }
+    .steps .step.active { background:var(--accent-gradient); color:#fff; box-shadow:0 4px 14px -4px rgba(59,130,246,0.45); }
+    .steps .step.active::before { background:#fff; color:var(--accent); }
+    .steps .step.done { background:linear-gradient(90deg, rgba(16,185,129,0.15), rgba(59,130,246,0.10)); border-color:rgba(16,185,129,0.4); }
+    .steps .step.done::before { background:#10b981; }
+    .shipping-methods { display:flex; flex-direction:column; gap:12px; margin-top:4px; }
+    .ship-opt { position:relative; }
+    .ship-opt input { position:absolute; opacity:0; }
+    .ship-opt label { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 18px; border:2px solid rgba(59,130,246,0.15); border-radius:16px; background:rgba(255,255,255,0.9); font-size:14px; font-weight:600; cursor:pointer; transition: var(--transition-fast); }
+    .ship-opt small { font-size:11px; font-weight:500; color:var(--muted); letter-spacing:0.04em; }
+    .ship-opt input:checked + label { border-color: var(--accent); box-shadow:0 0 0 4px rgba(59,130,246,0.25); }
+    .ship-opt label:hover { transform:translateY(-3px); }
+    .field.error input, .field.error select, .field.error textarea { border-color: var(--error) !important; box-shadow:0 0 0 3px rgba(239,68,68,0.2); }
+    .field .err-msg { display:none; font-size:11px; font-weight:600; color:var(--error); letter-spacing:0.04em; }
+    .field.error .err-msg { display:block; }
+  </style>
+</head>
+<body>
+  <div id="bgFX" class="bg-fx" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">Kyboot<span class="dot">.</span></a>
+    </div>
+  </header>
+  <main class="checkout-wrapper">
+    <a href="index.html" class="return-link">← Continue Shopping</a>
+    <div class="checkout-grid">
+      <form id="checkoutForm" class="panel" novalidate>
+        <div class="secure-badge"><span></span> Secure Checkout</div>
+        <div class="steps" id="progressSteps">
+          <div class="step active" data-section="customer">Details</div>
+          <div class="step" data-section="shipping">Shipping</div>
+          <div class="step" data-section="payment">Payment</div>
+          <div class="step" data-section="review">Review</div>
+        </div>
+        <h2>Customer Information</h2>
+        <div class="fields">
+          <div class="field"><label for="firstName">First Name</label><input id="firstName" required placeholder="John" autocomplete="given-name" /><span class="err-msg">Required</span></div>
+          <div class="field"><label for="lastName">Last Name</label><input id="lastName" required placeholder="Doe" autocomplete="family-name" /><span class="err-msg">Required</span></div>
+          <div class="field" style="grid-column:1 / -1"><label for="email">Email</label><input id="email" type="email" required placeholder="you@example.com" autocomplete="email" /><span class="err-msg">Enter a valid email</span></div>
+          <div class="field" style="grid-column:1 / -1"><label for="phone">Phone</label><input id="phone" type="tel" required placeholder="+974 5555 5555" autocomplete="tel" /><span class="err-msg">Enter a phone</span></div>
+        </div>
+        <div class="divider"></div>
+        <h2>Shipping Address</h2>
+        <div class="fields">
+          <div class="field" style="grid-column:1 / -1"><label for="address1">Address Line 1</label><input id="address1" required placeholder="Street, Building" autocomplete="address-line1" /><span class="err-msg">Required</span></div>
+          <div class="field" style="grid-column:1 / -1"><label for="address2">Address Line 2</label><input id="address2" placeholder="Apartment, Suite" autocomplete="address-line2" /></div>
+          <div class="field"><label for="city">City</label><input id="city" required placeholder="Doha" autocomplete="address-level2" /><span class="err-msg">Required</span></div>
+          <div class="field"><label for="state">State / Region</label><input id="state" required placeholder="--" autocomplete="address-level1" /><span class="err-msg">Required</span></div>
+          <div class="field"><label for="zip">Postal Code</label><input id="zip" required placeholder="00000" autocomplete="postal-code" /><span class="err-msg">Required</span></div>
+          <div class="field"><label for="country">Country</label><select id="country" required><option value="">Select...</option><option value="QA" selected>Qatar</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="AE">UAE</option></select><span class="err-msg">Required</span></div>
+        </div>
+        <h2 style="margin-top:32px">Shipping Method</h2>
+        <div class="shipping-methods" id="shippingMethods">
+          <div class="ship-opt"><input type="radio" name="ship" id="shipStandard" value="standard" checked><label for="shipStandard"><span>Standard (Free ≥ 500 QAR)</span><span><small>3-5 days</small> <strong id="shipStdCost">25 QAR</strong></span></label></div>
+          <div class="ship-opt"><input type="radio" name="ship" id="shipExpress" value="express"><label for="shipExpress"><span>Express</span><span><small>1-2 days</small> <strong>60 QAR</strong></span></label></div>
+          <div class="ship-opt"><input type="radio" name="ship" id="shipPickup" value="pickup"><label for="shipPickup"><span>Store Pickup</span><span><small>Same day</small> <strong>0 QAR</strong></span></label></div>
+        </div>
+        <div class="divider"></div>
+        <h2>Payment</h2>
+        <div class="payment-methods" role="radiogroup" aria-label="Payment Method">
+          <div class="pay-opt"><input type="radio" name="payMethod" id="pmCard" value="card" checked><label for="pmCard">💳 Credit Card</label></div>
+          <div class="pay-opt"><input type="radio" name="payMethod" id="pmCOD" value="cod"><label for="pmCOD">📦 Cash on Delivery</label></div>
+          <div class="pay-opt"><input type="radio" name="payMethod" id="pmApple" value="apple"><label for="pmApple"> Apple Pay</label></div>
+        </div>
+        <div id="cardFields" style="margin-top:22px;">
+          <div class="fields">
+            <div class="field" style="grid-column:1 / -1"><label for="cardNumber">Card Number</label><input id="cardNumber" inputmode="numeric" maxlength="19" placeholder="•••• •••• •••• ••••" /></div>
+            <div class="field"><label for="exp">Expiry</label><input id="exp" maxlength="5" placeholder="MM/YY" /></div>
+            <div class="field"><label for="cvc">CVC</label><input id="cvc" maxlength="4" placeholder="123" /></div>
+            <div class="field" style="grid-column:1 / -1"><label for="note">Order Notes</label><textarea id="note" placeholder="Any delivery preferences?"></textarea></div>
+          </div>
+          <p class="inline-note">Test form – no real payment processed.</p>
+        </div>
+        <div class="divider"></div>
+        <h2>Review & Place Order</h2>
+        <div class="review-box">
+          <span class="badge-pill" id="itemsBadge">0 ITEMS</span>
+          <div style="font-size:14px; line-height:1.5" id="reviewText">Cart details will appear here.</div>
+          <div class="review-total-row" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:8px;border-top:1px dashed rgba(59,130,246,0.25);font-weight:700;font-size:16px;">
+            <span>Total</span>
+            <span id="reviewTotal" style="background:var(--accent-gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">0.00 QAR</span>
+          </div>
+        </div>
+        <br />
+        <button type="submit" class="btn primary place-order-btn" id="placeOrderBtn">Place Order</button>
+      </form>
+      <aside class="panel order-summary" aria-label="Order Summary">
+        <h2>Order Summary</h2>
+        <div id="summaryItems" class="summary-items"></div>
+        <table class="totals-table">
+          <tr><td>Subtotal</td><td id="sumSubtotal">0.00 QAR</td></tr>
+          <tr><td>Shipping</td><td id="sumShipping">0.00 QAR</td></tr>
+          <tr class="grand"><td>Total</td><td id="sumTotal">0.00 QAR</td></tr>
+        </table>
+        <p style="font-size:12px; color:var(--muted);">By placing your order you agree to our <a href="#" style="color:var(--accent); text-decoration:none;">Terms</a>.</p>
+      </aside>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <div>© <span id="year"></span> Kyboot Shop – Checkout</div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="#">Support</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+  // Force normal mode for checkout (disable any persisted glass-mode preference)
+  try { localStorage.setItem('kyboot_ui_mode','normal'); } catch(e){}
+  document.addEventListener('DOMContentLoaded', () => { document.body.classList.remove('glass-mode'); });
+
+  // Attempt to hydrate product catalog from cached snapshot
+    const PRODUCTS = JSON.parse(localStorage.getItem('kyboot_products_cache') || '[]');
+    let productCache = PRODUCTS.slice();
+    const cart = (function(){ try { return JSON.parse(localStorage.getItem('kyboot_cart_v1'))||[]; } catch(e){ return []; } })();
+    const summaryItemsEl = document.getElementById('summaryItems');
+    const sumSubtotalEl = document.getElementById('sumSubtotal');
+    const sumShippingEl = document.getElementById('sumShipping');
+    const sumTotalEl = document.getElementById('sumTotal');
+    const itemsBadge = document.getElementById('itemsBadge');
+    const reviewText = document.getElementById('reviewText');
+  const reviewTotalEl = document.getElementById('reviewTotal');
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  const shippingRadios = () => Array.from(document.querySelectorAll('input[name="ship"]'));
+
+    // Basic product loader by scanning opener window if available
+    function getProductCatalog(){
+      if(productCache.length) return productCache;
+      try { if(window.opener && window.opener.PRODUCTS) return window.opener.PRODUCTS; } catch(e){}
+      return productCache; // may be empty
+    }
+    function findProduct(id){
+      const list = getProductCatalog();
+      return list.find(p=>p.id===id) || {};
+    }
+    function calcSubtotal(){
+      return cart.reduce((s,it)=>{ const p=findProduct(it.id); return s + (p.price? p.price*it.qty : 0); },0);
+    }
+    function renderSummary(){
+      summaryItemsEl.innerHTML='';
+      if(cart.length===0){
+        summaryItemsEl.innerHTML = '<div class="empty-msg">Your cart is empty.</div>';
+        document.querySelector('.place-order-btn').disabled = true;
+        return;
+      }
+      document.querySelector('.place-order-btn').disabled = false;
+      cart.forEach(it=>{
+        const p = findProduct(it.id);
+        if(!p.id) return;
+        const row = document.createElement('div');
+        row.className='summary-item';
+        row.innerHTML = `<img src="${p.image}" alt="${p.title}"><div class="meta"><span class="t">${p.title}</span><span class="q">Qty: ${it.qty}</span></div><div class="price">${(p.price*it.qty).toFixed(2)} QAR</div>`;
+        summaryItemsEl.appendChild(row);
+      });
+      const subtotal = calcSubtotal();
+  const shipping = computeShipping(subtotal);
+  const total = subtotal + shipping;
+      sumSubtotalEl.textContent = subtotal.toFixed(2) + ' QAR';
+      sumShippingEl.textContent = shipping.toFixed(2) + ' QAR';
+      sumTotalEl.textContent = total.toFixed(2) + ' QAR';
+      const itemsCount = cart.reduce((s,it)=>s+it.qty,0);
+      itemsBadge.textContent = itemsCount + (itemsCount===1?' ITEM':' ITEMS');
+      reviewText.textContent = `${itemsCount} item(s) • Subtotal ${subtotal.toFixed(2)} QAR • Shipping ${shipping===0? 'FREE': shipping.toFixed(2)+' QAR'}`;
+      reviewTotalEl.textContent = total.toFixed(2) + ' QAR';
+      if(placeOrderBtn){ placeOrderBtn.textContent = 'Place Order • ' + total.toFixed(2) + ' QAR'; }
+    }
+
+  async function ensureProductsLoaded(retry=0){
+      if(productCache.length) return true;
+      // Try to fetch app.js and parse PRODUCTS array
+      try {
+        const txt = await fetch('app.js', { cache:'no-cache' }).then(r=> r.ok ? r.text(): '');
+        const match = txt.match(/const\s+PRODUCTS\s*=\s*(\[(?:.|\n|\r)*?\n\]);/);
+        if(match){
+          const arrayCode = match[1];
+            /* eslint-disable no-new-func */
+          const extracted = Function('return ' + arrayCode)();
+          if(Array.isArray(extracted) && extracted.length){
+            productCache = extracted.map(p => ({ id:p.id, title:p.title, price:p.price, image:p.image }));
+            try { localStorage.setItem('kyboot_products_cache', JSON.stringify(productCache)); } catch(e){}
+            return true;
+          }
+        }
+      } catch(e) { /* ignore */ }
+      if(retry < 2){
+        await new Promise(r=>setTimeout(r, 300));
+        return ensureProductsLoaded(retry+1);
+      }
+      return false;
+    }
+
+
+    function computeShipping(subtotal){
+      const selected = (shippingRadios().find(r=>r.checked) || {}).value || 'standard';
+      if(selected === 'pickup') return 0;
+      if(selected === 'express') return 60;
+      if(subtotal >= 500){ const c=document.getElementById('shipStdCost'); if(c) c.textContent='FREE'; return 0; }
+      const c=document.getElementById('shipStdCost'); if(c) c.textContent='25 QAR';
+      return subtotal > 0 ? 25 : 0;
+    }
+    shippingRadios().forEach(r=> r.addEventListener('change', renderSummary));
+
+    // Payment method toggle
+    const payRadios = document.querySelectorAll('input[name="payMethod"]');
+    const cardFields = document.getElementById('cardFields');
+    payRadios.forEach(r=> r.addEventListener('change', () => {
+      cardFields.style.display = document.getElementById('pmCard').checked ? '' : 'none';
+    }));
+
+    // Basic form submission
+    document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(cart.length===0){ showToast('Your cart is empty', 'error'); return; }
+      const form = e.target;
+      const required = form.querySelectorAll('[required]');
+      let firstInvalid = null;
+      required.forEach(el => {
+        const field = el.closest('.field');
+        let valid = !!el.value.trim();
+        if(valid && el.type === 'email'){ valid = /.+@.+\..+/.test(el.value); }
+        if(!valid){ field?.classList.add('error'); if(!firstInvalid) firstInvalid = el; }
+        else { field?.classList.remove('error'); }
+      });
+      if(firstInvalid){ firstInvalid.focus(); return; }
+      // Fake processing
+      const btn = form.querySelector('.place-order-btn');
+      btn.disabled = true; btn.textContent='Processing...';
+      setTimeout(()=>{
+        // Clear cart
+        localStorage.setItem('kyboot_cart_v1','[]');
+        btn.textContent='Order Placed!';
+        btn.classList.add('success');
+        showDialog({
+          title:'Order Placed',
+          message:'Thank you! Your order has been placed (demo).',
+          confirmText:'Return Home',
+          onConfirm: () => { window.location.href='index.html'; }
+        });
+      }, 1200);
+    });
+
+    // Card formatting helpers
+    const cardNumber = document.getElementById('cardNumber');
+    const exp = document.getElementById('exp');
+    if(cardNumber){ cardNumber.addEventListener('input', () => { let v = cardNumber.value.replace(/[^0-9]/g,'').slice(0,16); cardNumber.value = v.replace(/(.{4})/g,'$1 ').trim(); }); }
+    if(exp){ exp.addEventListener('input', () => { let v = exp.value.replace(/[^0-9]/g,'').slice(0,4); if(v.length>=3) v = v.slice(0,2)+'/'+v.slice(2); exp.value = v; }); }
+
+    // Progress step highlight on scroll
+    const stepMap = [
+      { id:'customer', el: document.querySelector('h2:nth-of-type(1)') },
+      { id:'shipping', el: document.querySelector('h2:nth-of-type(2)') },
+      { id:'payment', el: document.querySelector('h2:nth-of-type(3)') },
+      { id:'review', el: document.querySelector('h2:nth-of-type(4)') }
+    ];
+    function updateSteps(){
+      const scrollY = window.scrollY + 140;
+      let activeId = stepMap[0].id;
+      for(const s of stepMap){ if(s.el && (s.el.offsetTop <= scrollY)) activeId = s.id; }
+      document.querySelectorAll('#progressSteps .step').forEach(st => {
+        st.classList.toggle('active', st.dataset.section === activeId);
+        const idx = stepMap.findIndex(x => x.id === st.dataset.section);
+        const activeIdx = stepMap.findIndex(x => x.id === activeId);
+        st.classList.toggle('done', idx < activeIdx);
+      });
+    }
+    window.addEventListener('scroll', updateSteps, { passive:true });
+    updateSteps();
+
+    // Basic year stamp (no theme toggle here)
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      document.body.classList.remove('glass-mode');
+    });
+
+    // Ensure product data loaded before first render
+    (async () => { await ensureProductsLoaded(); renderSummary(); initOrderSummaryStickyFallback(); })();
+
+    // JS fallback / enhancement for sticky summary (handles some mobile browsers & complex layouts)
+    function initOrderSummaryStickyFallback(){
+      const summary = document.querySelector('.order-summary');
+      if(!summary) return;
+      let anchorLeft = null; let anchorWidth = null; let parentBottom = null; let parentTop = null;
+      function recalcAnchors(){
+        summary.classList.remove('is-fixed'); summary.style.left=''; summary.style.width='';
+        const rect = summary.getBoundingClientRect();
+        anchorLeft = rect.left; anchorWidth = rect.width;
+        const parentRect = summary.parentElement.getBoundingClientRect();
+        const scrollY = window.scrollY || window.pageYOffset;
+        parentTop = scrollY + parentRect.top;
+        parentBottom = parentTop + parentRect.height;
+      }
+      function onScroll(){
+        if(window.innerWidth <= 960){ summary.classList.remove('is-fixed'); summary.style.left=''; summary.style.width=''; return; }
+        const scrollY = window.scrollY || window.pageYOffset;
+        const targetTop = 20;
+        const currentTopDoc = summary.getBoundingClientRect().top + scrollY;
+        const summaryHeight = summary.getBoundingClientRect().height;
+        const limit = parentBottom - summaryHeight - 30;
+        if(scrollY + targetTop > currentTopDoc && scrollY < limit){
+          if(!summary.classList.contains('is-fixed')){ summary.classList.add('is-fixed'); summary.style.width = anchorWidth + 'px'; }
+          summary.style.left = anchorLeft + 'px';
+        } else {
+          summary.classList.remove('is-fixed'); summary.style.left=''; summary.style.width='';
+        }
+      }
+      window.addEventListener('resize', () => { recalcAnchors(); onScroll(); }, { passive:true });
+      window.addEventListener('scroll', onScroll, { passive:true });
+      recalcAnchors(); onScroll();
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
