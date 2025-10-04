@@ -10,39 +10,39 @@ const PRODUCTS = [
   {
     id: 'kb-001',
     title: 'Kyboot CloudRunner Sneaker',
-    price: 349,
+    price: 1349,
     category: 'Sneakers',
     description: 'Lightweight everyday sneaker with ergonomic sole and breathable mesh.',
     image: 'https://images.ctfassets.net/hnk2vsx53n6l/4gUWSLm8iWX5eOoDpKVwxo/b6e653f79f6836c7ad8027fc40723e08/bbfd217f59a6fd93f4510e4502ee11530eeb2d7b.png?w=1500&h=1500&fm=jpg&fl=progressive&f=center&fit=fill&q=80'
   },
   {
     id: 'kb-002',
-    title: 'Kyboot TrailMaster',
-    price: 429,
+    title: 'Kyboot Karl grey-blue',
+    price: 1429,
     category: 'Boots',
     description: 'Rugged trail boot with reinforced toe and weather-resistant membrane.',
-    image: 'https://shoewarehousenaples.com/cdn/shop/files/AM189A_Meilen_black_grey_a.png?v=1715849272&width=2048'
+    image: 'https://cdn.shopify.com/s/files/1/1956/3439/files/kybun-shoe_3_700x.png'
   },
   {
     id: 'kb-003',
-    title: 'Kyboot Comfort Walk Loafer',
-    price: 279,
+    title: 'kyboot Aubonne black poule',
+    price: 1279,
     category: 'Casual',
     description: 'Smart-casual slip-on with memory-foam footbed for all-day comfort.',
-    image: 'https://ch.kybun.swiss/cdn/shop/files/67448accd0c1665faed187531eAM001A_a.png?v=1754918245&width=1946'
+    image: 'https://us.kybun.swiss/cdn/shop/files/67448461bf66865faed28e8cc3AM044A_a_f2366f5d-0f56-48a8-bdcc-a9710def4ef0.png?v=1754918228&width=533'
   },
   {
     id: 'kb-004',
     title: 'Kyboot Mens Ruty White sneakers',
-    price: 189,
+    price: 1189,
     category: 'Kids',
     description: 'Colorful, flexible shoes for kids with easy-fastening straps.',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNb9aQ4cH8VZB_AKDdCUqNWcyHM15Q9CbolQ&s'
+    image: 'https://www.errant.dk/cdn/shop/files/White_Essential_Single.jpg?v=1738151288&width=4000'
   },
   {
     id: 'kb-005',
     title: 'Kyboot Sport Runner',
-    price: 399,
+    price: 1399,
     category: 'Running',
     description: 'Performance running shoe with cushioned midsole and responsive rebound.',
     image: 'https://us.kybun.swiss/cdn/shop/files/kybun-shoe_9.png?v=1708958472&width=1500'
@@ -50,7 +50,7 @@ const PRODUCTS = [
     {
         id: 'kb-006',
         title: 'Kyboot Mens Rolle Men Navy sneakers',
-        price: 319,
+        price: 1319,
         category: 'Casual',
         description: 'Versatile urban shoe with sleek design and all-day comfort.',
         image: 'https://static.wixstatic.com/media/15a1f3_d04a6db1eb0d4e7fb79482250cc233e3~mv2.jpg/v1/fill/w_1173,h_781,al_c,q_85/15a1f3_d04a6db1eb0d4e7fb79482250cc233e3~mv2.jpg'
@@ -58,7 +58,7 @@ const PRODUCTS = [
     {
         id: 'kb-007',
         title: 'Kyboot Meilen Gold sneakers Kybun',
-        price: 199,
+        price: 1199,
         category: 'Running',
         description: 'Durable and flexible sneakers for kids with vibrant colors.',
         image: 'https://static.wixstatic.com/media/15a1f3_2dd40ea0464f4f999472f258aec54eda~mv2.jpg/v1/fill/w_1173,h_781,al_c,q_85/15a1f3_2dd40ea0464f4f999472f258aec54eda~mv2.jpg'
@@ -66,7 +66,7 @@ const PRODUCTS = [
     {
         id: 'kb-008',
         title: 'Kyboot Almasa FG Ostrich Beige sandals',
-        price: 459,
+        price: 1459,
         category: 'sandals',
         description: 'All-terrain hiking boot with superior grip and ankle support.',
         image: 'https://static.wixstatic.com/media/4d4ede_2b91c798d3494416b50f10aa27e91950~mv2.jpg/v1/fill/w_782,h_782,al_c,q_85/4d4ede_2b91c798d3494416b50f10aa27e91950~mv2.jpg'
@@ -74,7 +74,7 @@ const PRODUCTS = [
     {
         id: 'kb-009',
         title: 'kyboot URI Men Black',
-        price: 379,
+        price: 1379,
         category: 'sandals',
         description: 'Lightweight trainer with breathable upper and energy-return sole.',
         image: 'https://static.wixstatic.com/media/15a1f3_064018b81c8f4bf0816f82c6b3633877~mv2.jpg/v1/fill/w_1173,h_781,al_c,q_85/15a1f3_064018b81c8f4bf0816f82c6b3633877~mv2.jpg'
@@ -82,7 +82,7 @@ const PRODUCTS = [
     {
         id: 'kb-010',
         title: 'Kyboot Tropics FG Brown sandals',
-        price: 299,
+        price: 1299,
         category: 'sandals',
         description: 'Timeless leather loafer with cushioned insole for everyday wear.',
         image: 'https://static.wixstatic.com/media/15a1f3_79f499159a9c4182bece764604db85d7~mv2.jpg/v1/fill/w_761,h_507,al_c,q_85,usm_0.66_1.00_0.01/15a1f3_79f499159a9c4182bece764604db85d7~mv2.jpg'
@@ -90,12 +90,45 @@ const PRODUCTS = [
     {
         id: 'kb-011',
         title: 'Kyboot Mens Ruty White sneakers',
-        price: 189,
-        category: 'Kids',
+        price: 1189,
+        category: 'sneakers',
         description: 'Colorful, flexible shoes for kids with easy-fastening straps.',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNb9aQ4cH8VZB_AKDdCUqNWcyHM15Q9CbolQ&s'
+        image: 'https://static.wixstatic.com/media/4d4ede_67a7fc37da99439bbdd7b5060c8f63c6~mv2.jpg/v1/fill/w_782,h_782,al_c,q_85,enc_avif,quality_auto/4d4ede_67a7fc37da99439bbdd7b5060c8f63c6~mv2.jpg'
     
     },
+    {
+        id: 'kb-012',
+        title: 'Kyboot Sargans sand ',
+        price: 1259,
+        category: 'Running',
+        description: 'Durable and flexible sneakers for kids with vibrant colors.',
+        image: 'https://us.kybun.swiss/cdn/shop/files/67448b3af2ef365faed6fae66aAM107A_a_d3f7576b-d50f-47db-9779-c4c2f52acfe9.png?v=1754918238&width=1920'
+    },
+    {
+      id: 'kb-012',
+      title: 'Kyboot Air cussing sneakers',
+      price: 1199,
+      category: 'sneakers',
+      description: 'Durable and flexible sneakers for kids with vibrant colors.',
+      image: 'https://cdn.shopify.com/s/files/1/1956/3439/files/kybun-shoe_10.png'
+    },
+    {
+      id: 'kb-012',
+      title: 'Kyboot valley sole sneakers',
+      price: 1129,
+      category: 'sneakers',
+      description: 'Durable and flexible sneakers for kids with vibrant colors.',
+      image: 'https://eneslow.com/media/catalog/product/cache/39f3bf38cfc79d25b643b50504982e70/k/f/kfw2103.jpg'
+    },
+    {
+      id: 'kb-012',
+      title: 'Kyboot Kids Meilen Pink sneakers',
+      price: 1089,
+      category: 'Kids',
+      description: 'Durable and flexible sneakers for kids with vibrant colors.',
+      image: 'https://static.wixstatic.com/media/15a1f3_747049fcaed74a8a9b1b2ad1eff11082~mv2.jpg/v1/fill/w_980,h_653,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/15a1f3_747049fcaed74a8a9b1b2ad1eff11082~mv2.jpg'
+  },
+
   
 ];
 
@@ -172,37 +205,54 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ---------- Ambient Background Orbs ---------- */
-function initBackgroundOrbs(){
+function initBackgroundOrbs() {
   const container = document.getElementById('bgFX');
-  if(!container) return;
-  // Avoid duplicates (hot reload, etc.)
-  if(container.dataset.enhanced) return; 
+  if (!container) return;
+
+  // Avoid duplicates (for hot reload, etc.)
+  if (container.dataset.enhanced) return;
   container.dataset.enhanced = 'true';
 
-  const ORB_COUNT = 9;
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  for(let i=0;i<ORB_COUNT;i++){
+  const orbCount = 20; // number of orbs
+  const colors = [
+    'rgba(255, 183, 197, 0.25)',
+    'rgba(156, 220, 254, 0.25)',
+    'rgba(255, 243, 178, 0.25)',
+    'rgba(200, 255, 200, 0.25)',
+    'rgba(255, 180, 255, 0.25)',
+  ];
+
+  // Create floating orbs
+  for (let i = 0; i < orbCount; i++) {
     const orb = document.createElement('div');
-    orb.className = 'orb';
-    const size = Math.round( (Math.random()*0.6 + 0.4) * 260 );
-    const xStart = Math.round(Math.random() * (vw - size));
-    const yStart = Math.round(Math.random() * (vh - size));
-    const xDrift = Math.round((Math.random()*2 -1) * 120);
-    const yDrift = Math.round((Math.random()*2 -1) * 140);
-    const dur = (Math.random()*14 + 18).toFixed(1) + 's';
-    const delay = (Math.random()*-20).toFixed(2) + 's';
-    const opacity = (Math.random()*0.35 + 0.25).toFixed(2);
-    orb.style.setProperty('--size', size+'px');
-    orb.style.setProperty('--xStart', xStart+'px');
-    orb.style.setProperty('--yStart', yStart+'px');
-    orb.style.setProperty('--xDrift', xDrift+'px');
-    orb.style.setProperty('--yDrift', yDrift+'px');
-    orb.style.setProperty('--dur', dur);
-    orb.style.setProperty('--delay', delay);
-    orb.style.setProperty('--o', opacity);
+    const size = Math.random() * 80 + 40; // 40–120px
+    orb.style.width = `${size}px`;
+    orb.style.height = `${size}px`;
+    orb.style.position = 'absolute';
+    orb.style.borderRadius = '50%';
+    orb.style.background = colors[Math.floor(Math.random() * colors.length)];
+    orb.style.filter = 'blur(30px)';
+    orb.style.left = `${Math.random() * 100}%`;
+    orb.style.top = `${Math.random() * 100}%`;
+    orb.style.opacity = '0.6';
+    orb.style.transition = 'transform 10s ease-in-out';
     container.appendChild(orb);
+
+    // Random floating animation
+    const animateOrb = () => {
+      const x = (Math.random() - 0.5) * 200; // random drift
+      const y = (Math.random() - 0.5) * 200;
+      orb.style.transform = `translate(${x}px, ${y}px) scale(${1 + Math.random() * 0.3})`;
+      setTimeout(animateOrb, 6000 + Math.random() * 4000);
+    };
+    animateOrb();
   }
+
+  // Optional slow rotation for the whole container
+  container.animate(
+    [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+    { duration: 120000, iterations: Infinity, easing: 'linear' }
+  );
 
   // Recompute on resize (debounced)
   let resizeTO;
@@ -1042,7 +1092,7 @@ function showContactPopover(anchor){
         </div>
         <div class="helper-links">
           <a href="mailto:support@kyboot.example" class="quick-mail">Email support directly</a>
-          <a href="tel:+974000000" class="quick-call">Call: +974 0000 000</a>
+          <a href="tel:+97455629900" class="quick-call">Call: +97455629900</a>
         </div>
         <div class="actions-row">
           <button type="submit" class="btn primary small">Send</button>
